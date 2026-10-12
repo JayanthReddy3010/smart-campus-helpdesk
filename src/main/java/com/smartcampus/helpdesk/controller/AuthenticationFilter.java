@@ -1,5 +1,6 @@
 package com.smartcampus.helpdesk.controller;
 
+import com.smartcampus.helpdesk.dao.UserDAO;
 import com.smartcampus.helpdesk.model.UserRole;
 import com.smartcampus.helpdesk.model.User;
 import com.smartcampus.helpdesk.util.AuthUtil;
@@ -14,9 +15,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Locale;
 
 @WebFilter("/*")
 public class AuthenticationFilter implements Filter {
+
+    private final UserDAO userDAO = new UserDAO();
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -72,13 +77,27 @@ public class AuthenticationFilter implements Filter {
         String identity = request.getParameter("email");
         identity = identity == null ? "" : identity.trim();
         if (identity.isBlank()) {
-            identity = "demo-user";
+            identity = "demo.student@campus.local";
         }
 
-        // Demo authentication: credentials are intentionally not verified for college project demonstration.
-        User demoUser = new User(-1, identity, identity, null, UserRole.STUDENT, null, null);
-        AuthUtil.signIn(request, demoUser);
-        response.sendRedirect(request.getContextPath() + "/student/dashboard?demo=true");
+        UserRole role = UserRole.STUDENT;
+        String lower = identity.toLowerCase(Locale.ROOT);
+        if (lower.contains("admin")) {
+            role = UserRole.ADMIN;
+        } else if (lower.contains("staff")) {
+            role = UserRole.STAFF;
+        }
+
+        try {
+            User demoUser = userDAO.findOrCreateDemoUser(identity, role);
+            AuthUtil.signIn(request, demoUser);
+            String area = demoUser.getRole() == UserRole.ADMIN ? "admin"
+                    : (demoUser.getRole() == UserRole.STAFF ? "staff" : "student");
+            response.sendRedirect(request.getContextPath() + "/" + area + "/dashboard?demo=true");
+        } catch (SQLException exception) {
+            request.getServletContext().log("Unable to provision or load demo user for: " + identity, exception);
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=db");
+        }
     }
 
     private boolean isProtectedPath(String path) {

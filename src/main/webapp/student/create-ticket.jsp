@@ -7,11 +7,11 @@
     String area = "STAFF".equals(role) || "ADMIN".equals(role) ? "staff" : "student";
     String name = HtmlUtil.escape((String) session.getAttribute("auth.userName"));
     List<Category> categories = (List<Category>) request.getAttribute("categories");
-    String formCategoryId = String.valueOf(request.getAttribute("formCategoryId"));
-    String formSubject = String.valueOf(request.getAttribute("formSubject"));
-    String formDescription = String.valueOf(request.getAttribute("formDescription"));
-    String formLocation = String.valueOf(request.getAttribute("formLocation"));
-    String formPriority = String.valueOf(request.getAttribute("formPriority"));
+    String formCategoryId = request.getAttribute("formCategoryId") != null ? String.valueOf(request.getAttribute("formCategoryId")) : "";
+    String formSubject = request.getAttribute("formSubject") != null ? String.valueOf(request.getAttribute("formSubject")) : "";
+    String formDescription = request.getAttribute("formDescription") != null ? String.valueOf(request.getAttribute("formDescription")) : "";
+    String formLocation = request.getAttribute("formLocation") != null ? String.valueOf(request.getAttribute("formLocation")) : "";
+    String formPriority = request.getAttribute("formPriority") != null ? String.valueOf(request.getAttribute("formPriority")) : "MEDIUM";
     String formToken = HtmlUtil.escape(String.valueOf(session.getAttribute("createTicket.formToken")));
 %>
 <!DOCTYPE html>
@@ -58,7 +58,7 @@
                     <input type="hidden" name="csrfToken" value="<%= session.getAttribute("security.csrfToken") %>">
                     <div class="form-grid">
                         <label>Category *<select name="categoryId" required data-required-field><option value="">Select a category</option><% if (categories != null) { for (Category category : categories) { %><option value="<%= category.getCategoryId() %>" <%= String.valueOf(category.getCategoryId()).equals(formCategoryId) ? "selected" : "" %>><%= HtmlUtil.escape(category.getCategoryName()) %></option><% } } %></select></label>
-                        <label>Priority *<select name="priority" required data-required-field><option value="">Select priority</option><option value="LOW" <%= "LOW".equals(formPriority) ? "selected" : "" %>>Low</option><option value="MEDIUM" <%= "MEDIUM".equals(formPriority) || "null".equals(formPriority) ? "selected" : "" %>>Medium</option><option value="HIGH" <%= "HIGH".equals(formPriority) ? "selected" : "" %>>High</option><option value="URGENT" <%= "URGENT".equals(formPriority) ? "selected" : "" %>>Urgent</option></select></label>
+                        <label>Priority *<select name="priority" required data-required-field><option value="">Select priority</option><option value="LOW" <%= "LOW".equals(formPriority) ? "selected" : "" %>>Low</option><option value="MEDIUM" <%= "MEDIUM".equals(formPriority) || formPriority.isEmpty() ? "selected" : "" %>>Medium</option><option value="HIGH" <%= "HIGH".equals(formPriority) ? "selected" : "" %>>High</option><option value="URGENT" <%= "URGENT".equals(formPriority) ? "selected" : "" %>>Urgent</option></select></label>
                     </div>
                     <label>Subject *<input type="text" name="subject" value="<%= formSubject %>" maxlength="200" required data-required-field data-label="Subject"><span class="field-hint">Up to 200 characters.</span></label>
                     <label>Description *<textarea name="description" rows="7" maxlength="5000" required data-required-field data-label="Description"><%= formDescription %></textarea><span class="field-hint">Include useful context, steps already tried, and any impact.</span></label>

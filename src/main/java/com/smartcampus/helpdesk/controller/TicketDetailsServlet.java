@@ -53,6 +53,7 @@ public class TicketDetailsServlet extends HttpServlet {
             }
             request.getRequestDispatcher("/student/ticket-details.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to load ticket details for ticket " + ticketId + ", user " + userId, exception);
             request.setAttribute("error", "Ticket details are temporarily unavailable.");
             request.getRequestDispatcher("/student/ticket-details.jsp").forward(request, response);
         }

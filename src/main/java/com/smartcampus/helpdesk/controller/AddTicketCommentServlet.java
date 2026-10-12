@@ -56,6 +56,7 @@ public class AddTicketCommentServlet extends HttpServlet {
             commentDAO.create(new TicketComment(null, ticketId, userId, comment, null));
             response.sendRedirect(request.getContextPath() + "/" + area + "/ticket?id=" + ticketId + "&commentAdded=true");
         } catch (SQLException exception) {
+            getServletContext().log("Unable to add comment for ticket " + ticketId + ", user " + userId, exception);
             redirectError(request, response, area, ticketId, "unavailable");
         }
     }

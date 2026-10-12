@@ -58,6 +58,7 @@ public class AdminAssignmentServlet extends HttpServlet {
             }
             response.sendRedirect(request.getContextPath() + "/admin/ticket?id=" + ticketId + "&assigned=true");
         } catch (SQLException exception) {
+            getServletContext().log("Unable to assign ticket " + ticketId + " to staff " + staffId, exception);
             showError(request, response, null, "The assignment could not be completed. Please try again.");
         }
     }

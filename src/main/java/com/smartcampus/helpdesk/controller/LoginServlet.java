@@ -47,6 +47,7 @@ public class LoginServlet extends HttpServlet {
             AuthUtil.signIn(request, user);
             response.sendRedirect(request.getContextPath() + "/index.jsp");
         } catch (SQLException | IllegalStateException exception) {
+            getServletContext().log("Database error during login for: " + email, exception);
             showError(request, response, "Login is temporarily unavailable. Please try again later.");
         }
     }

@@ -64,6 +64,7 @@ public class AdminTicketDetailsServlet extends HttpServlet {
             }
             request.getRequestDispatcher("/admin/ticket-details.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to load admin ticket details for ticket " + ticketId, exception);
             request.setAttribute("error", "Ticket details are temporarily unavailable.");
             request.getRequestDispatcher("/admin/ticket-details.jsp").forward(request, response);
         }

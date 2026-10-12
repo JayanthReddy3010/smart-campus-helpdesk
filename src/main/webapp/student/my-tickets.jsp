@@ -9,10 +9,10 @@
     String name = HtmlUtil.escape((String) session.getAttribute("auth.userName"));
     List<Ticket> tickets = (List<Ticket>) request.getAttribute("tickets");
     List<Category> categories = (List<Category>) request.getAttribute("categories");
-    String selectedStatus = String.valueOf(request.getAttribute("selectedStatus"));
-    String selectedPriority = String.valueOf(request.getAttribute("selectedPriority"));
-    String selectedCategory = String.valueOf(request.getAttribute("selectedCategory"));
-    String search = HtmlUtil.escape(String.valueOf(request.getAttribute("search")));
+    String selectedStatus = request.getAttribute("selectedStatus") != null ? String.valueOf(request.getAttribute("selectedStatus")) : "";
+    String selectedPriority = request.getAttribute("selectedPriority") != null ? String.valueOf(request.getAttribute("selectedPriority")) : "";
+    String selectedCategory = request.getAttribute("selectedCategory") != null ? String.valueOf(request.getAttribute("selectedCategory")) : "";
+    String search = request.getAttribute("search") != null ? HtmlUtil.escape(String.valueOf(request.getAttribute("search"))) : "";
 %>
 <!DOCTYPE html>
 <html lang="en">

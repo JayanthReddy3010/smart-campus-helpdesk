@@ -40,8 +40,10 @@ public class AdminStatusUpdateServlet extends HttpServlet {
             }
             response.sendRedirect(request.getContextPath() + "/admin/ticket?id=" + ticketId + "&statusUpdated=true");
         } catch (IllegalStateException exception) {
+            getServletContext().log("Invalid status transition requested for ticket " + ticketId, exception);
             response.sendRedirect(request.getContextPath() + "/admin/ticket?id=" + ticketId + "&statusError=invalid");
         } catch (SQLException exception) {
+            getServletContext().log("Unable to update status for ticket " + ticketId, exception);
             response.sendRedirect(request.getContextPath() + "/admin/ticket?id=" + ticketId + "&statusError=unavailable");
         }
     }

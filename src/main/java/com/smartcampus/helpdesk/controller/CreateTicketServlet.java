@@ -39,9 +39,15 @@ public class CreateTicketServlet extends HttpServlet {
 
         try {
             request.setAttribute("categories", categoryDAO.findActive());
+            request.setAttribute("formCategoryId", "");
+            request.setAttribute("formSubject", "");
+            request.setAttribute("formDescription", "");
+            request.setAttribute("formLocation", "");
+            request.setAttribute("formPriority", "MEDIUM");
             request.getSession(true).setAttribute(FORM_TOKEN, UUID.randomUUID().toString());
             request.getRequestDispatcher("/student/create-ticket.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to load active ticket categories.", exception);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Ticket categories are temporarily unavailable.");
         }
@@ -95,6 +101,7 @@ public class CreateTicketServlet extends HttpServlet {
             String area = AuthUtil.getRole(request) == UserRole.STUDENT ? "student" : "staff";
             response.sendRedirect(request.getContextPath() + "/" + area + "/ticket?id=" + ticket.getTicketId() + "&created=true");
         } catch (SQLException | IllegalStateException exception) {
+            getServletContext().log("Unable to submit ticket for user " + userId, exception);
             showForm(request, response, "The ticket could not be submitted. Please try again.");
         }
     }
@@ -133,6 +140,7 @@ public class CreateTicketServlet extends HttpServlet {
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("/student/create-ticket.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to reload active ticket categories.", exception);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Ticket categories are temporarily unavailable.");
         }

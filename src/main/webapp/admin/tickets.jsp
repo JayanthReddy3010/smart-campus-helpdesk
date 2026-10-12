@@ -7,11 +7,11 @@
 <%
     List<AdminTicketRow> tickets = (List<AdminTicketRow>) request.getAttribute("tickets");
     List<Category> categories = (List<Category>) request.getAttribute("categories");
-    String selectedStatus = String.valueOf(request.getAttribute("selectedStatus"));
-    String selectedPriority = String.valueOf(request.getAttribute("selectedPriority"));
-    String selectedCategory = String.valueOf(request.getAttribute("selectedCategory"));
-    String selectedAssignedStaff = String.valueOf(request.getAttribute("selectedAssignedStaff"));
-    String search = HtmlUtil.escape(String.valueOf(request.getAttribute("search")));
+    String selectedStatus = request.getAttribute("selectedStatus") != null ? String.valueOf(request.getAttribute("selectedStatus")) : "";
+    String selectedPriority = request.getAttribute("selectedPriority") != null ? String.valueOf(request.getAttribute("selectedPriority")) : "";
+    String selectedCategory = request.getAttribute("selectedCategory") != null ? String.valueOf(request.getAttribute("selectedCategory")) : "";
+    String selectedAssignedStaff = request.getAttribute("selectedAssignedStaff") != null ? String.valueOf(request.getAttribute("selectedAssignedStaff")) : "";
+    String search = request.getAttribute("search") != null ? HtmlUtil.escape(String.valueOf(request.getAttribute("search"))) : "";
     List<User> staffUsers = (List<User>) request.getAttribute("staffUsers");
 %>
 <!DOCTYPE html>

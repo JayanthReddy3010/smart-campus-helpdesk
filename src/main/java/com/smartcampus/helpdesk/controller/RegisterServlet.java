@@ -34,9 +34,18 @@ public class RegisterServlet extends HttpServlet {
         String email = value(request.getParameter("email")).toLowerCase(Locale.ROOT);
         String department = value(request.getParameter("department"));
         String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
 
         if (name.isBlank() || email.isBlank() || password == null || password.isBlank()) {
             showError(request, response, "Complete all required fields.");
+            return;
+        }
+        if (confirmPassword == null || !password.equals(confirmPassword)) {
+            showError(request, response, "Passwords do not match.");
+            return;
+        }
+        if (password.length() < 8) {
+            showError(request, response, "Password must be at least 8 characters.");
             return;
         }
         if (name.length() > 150 || email.length() > 254) {
@@ -44,20 +53,23 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        User user = new User(null, name, email, null,
-                UserRole.STUDENT, department.isBlank() ? null : department, null);
         try {
+            if (userDAO.findByEmail(email) != null) {
+                showError(request, response, "An account with this email already exists.");
+                return;
+            }
+
+            User user = new User(null, name, email, null,
+                    UserRole.STUDENT, department.isBlank() ? null : department, null);
             user.setPasswordHash(PasswordUtil.hashPassword(password));
             userDAO.create(user);
-        } catch (SQLException | IllegalStateException exception) {
-            exception.printStackTrace();
-        }
 
-        if (user.getUserId() == null) {
-            user.setUserId(-1);
+            AuthUtil.signIn(request, user);
+            response.sendRedirect(request.getContextPath() + "/student/dashboard?registered=true");
+        } catch (SQLException | IllegalStateException exception) {
+            getServletContext().log("Registration failed for " + email, exception);
+            showError(request, response, "Unable to complete registration. Please try again.");
         }
-        AuthUtil.signIn(request, user);
-        response.sendRedirect(request.getContextPath() + "/student/dashboard?demo=true");
     }
 
     private void showError(HttpServletRequest request, HttpServletResponse response, String message)

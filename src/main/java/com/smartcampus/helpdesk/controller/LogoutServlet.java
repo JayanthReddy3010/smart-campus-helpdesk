@@ -18,6 +18,7 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        doGet(request, response);
+        AuthUtil.signOut(request);
+        response.sendRedirect(request.getContextPath() + "/login.jsp?loggedOut=true");
     }
 }

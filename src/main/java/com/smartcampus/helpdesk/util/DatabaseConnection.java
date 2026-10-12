@@ -11,9 +11,18 @@ import java.util.Properties;
 public final class DatabaseConnection {
 
     private static final String CONFIGURATION_FILE = "db.properties";
+    private static final String MYSQL_DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
     private static final String URL_KEY = "db.url";
     private static final String USERNAME_KEY = "db.username";
     private static final String PASSWORD_KEY = "db.password";
+
+    static {
+        try {
+            Class.forName(MYSQL_DRIVER_CLASS);
+        } catch (ClassNotFoundException ignored) {
+            // Evaluated and reported explicitly in getConnection().
+        }
+    }
 
     private DatabaseConnection() {
         // Utility class.
@@ -32,6 +41,12 @@ public final class DatabaseConnection {
         String url = requiredValue(configuration, URL_KEY);
         String username = requiredValue(configuration, USERNAME_KEY);
         String password = configuration.getProperty(PASSWORD_KEY, "");
+
+        try {
+            Class.forName(MYSQL_DRIVER_CLASS);
+        } catch (ClassNotFoundException exception) {
+            throw new SQLException("MySQL JDBC driver is not available.", exception);
+        }
 
         return DriverManager.getConnection(url, username, password);
     }

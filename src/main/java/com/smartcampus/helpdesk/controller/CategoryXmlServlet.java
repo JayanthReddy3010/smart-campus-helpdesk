@@ -58,8 +58,10 @@ public class CategoryXmlServlet extends HttpServlet {
             int imported = categoryDAO.importConfiguration(categories);
             response.sendRedirect(request.getContextPath() + "/admin/category-xml?imported=" + imported);
         } catch (XmlExchangeException exception) {
+            getServletContext().log("Category XML schema validation failed", exception);
             showError(request, response, "The XML file is invalid or does not match the category schema.");
         } catch (SQLException exception) {
+            getServletContext().log("Category XML database import failed", exception);
             showError(request, response, "The category configuration could not be imported.");
         }
     }

@@ -56,6 +56,7 @@ public class AdminTicketListServlet extends HttpServlet {
             request.setAttribute("search", search == null ? "" : search);
             request.getRequestDispatcher("/admin/tickets.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to load admin ticket list", exception);
             request.setAttribute("error", "Ticket data is temporarily unavailable.");
             request.getRequestDispatcher("/admin/tickets.jsp").forward(request, response);
         }

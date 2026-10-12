@@ -34,6 +34,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("recentTickets", ticketDAO.findRecentByUserId(userId, 5));
             request.getRequestDispatcher("/student/dashboard.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to load user dashboard for user " + userId, exception);
             request.setAttribute("error", "Ticket information is temporarily unavailable.");
             request.getRequestDispatcher("/student/dashboard.jsp").forward(request, response);
         }

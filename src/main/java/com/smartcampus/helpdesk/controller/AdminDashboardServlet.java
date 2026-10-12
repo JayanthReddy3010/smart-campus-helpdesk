@@ -36,6 +36,7 @@ public class AdminDashboardServlet extends HttpServlet {
             request.setAttribute("highPriorityTickets", ticketDAO.countHighPriorityAdminTickets());
             request.getRequestDispatcher("/admin/dashboard.jsp").forward(request, response);
         } catch (SQLException exception) {
+            getServletContext().log("Unable to load admin dashboard data", exception);
             request.setAttribute("error", "Administrative ticket data is temporarily unavailable.");
             request.getRequestDispatcher("/admin/dashboard.jsp").forward(request, response);
         }

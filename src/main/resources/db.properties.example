@@ -1,0 +1,7 @@
+# Smart Campus Helpdesk - Database Configuration Template
+# Copy this file to db.properties and set your local MySQL connection settings.
+# NEVER commit db.properties to source control.
+
+db.url=jdbc:mysql://localhost:3306/smart_campus_helpdesk?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+db.username=root
+db.password=your_password_here
